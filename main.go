@@ -1,8 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
+
+	twitchApi "github.com/Onestay/go-new-twitch"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
@@ -11,7 +12,11 @@ import (
 	"github.com/markbates/goth/providers/twitch"
 )
 
+var client *twitchApi.Client
+
 func main() {
+	client = twitchApi.NewClient("93uv9e2fs5bp8j65wyzdbqu1h7ulth")
+
 	gothic.Store = sessions.NewCookieStore([]byte("secret"))
 
 	r := gin.Default()
@@ -46,20 +51,20 @@ func callback(c *gin.Context) {
 	q := c.Request.URL.Query()
 	q.Add("provider", "twitch")
 	c.Request.URL.RawQuery = q.Encode()
-	user, err := gothic.CompleteUserAuth(c.Writer, c.Request)
+	_, err := gothic.CompleteUserAuth(c.Writer, c.Request)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	res, err := json.Marshal(user)
+	/*res, err := json.Marshal(user)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	jsonString := string(res)
+	jsonString := string(res)*/
 
 	session, _ := gothic.Store.Get(c.Request, "current_session")
 	streamer := session.Values["streamer"]
 
-	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(jsonString+" "+streamer.(string)))
+	c.HTML(http.StatusOK, "streamer.tmpl", gin.H{"streamer": streamer})
 }
