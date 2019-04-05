@@ -1,1 +1,1 @@
-web: StreamEventViewer-
+web: ./bin/StreamerEventViewer-
