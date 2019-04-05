@@ -1,3 +1,4 @@
+
 <iframe
     src="https://player.twitch.tv/?channel={{.streamer}}"
     height="600"
@@ -6,7 +7,26 @@
 </iframe>
 <iframe 
         id="chat_embed"
-        src="http://twitch.tv/embed/{{.streamer}}/chat?popout="
+        src="https://twitch.tv/embed/{{.streamer}}/chat"
         height="400"
         width="800">
 </iframe>
+<div>
+<h3>Events</h3>
+<ul id="events"></ul>
+</div>
+<script>
+var socket = new WebSocket('wss://{{.url}}/websocket');
+socket.onmessage = function(event) {
+  var message = event.data;
+  var list = document.getElementById('events');
+  list.innerHTML = '<li>' + event.data + '</li>' + list.innerHTML;
+  while ( list.children.length > 10 )
+    {
+      list.removeChild(list.lastChild );
+    }
+};
+socket.onerror = function(event) {
+  console.error("WebSocket error observed:", event);
+}
+</script>
