@@ -24,7 +24,7 @@ var url string
 var wsConnection *websocket.Conn
 
 func main() {
-	url = "thin-cobra-88.localtunnel.me"
+	url = "whispering-meadow-13437.herokuapp.com"
 	client = twitchApi.NewClient("93uv9e2fs5bp8j65wyzdbqu1h7ulth")
 
 	gothic.Store = sessions.NewCookieStore([]byte("secret"))
